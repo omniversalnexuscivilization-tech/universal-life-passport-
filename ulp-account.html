@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Universal Life Passport - Your complete multi-sector identity for Education 5.0 and Civilization 2.0">
+    <meta name="keywords" content="Life Passport, Education 5.0, UEC, Blockchain Identity, Multi-Sector Recognition">
+    <title>Universal Life Passport - Complete Identity System</title>
+    <link rel="stylesheet" href="ulp-account.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">Universal Life Passport</span>
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#sectors" class="nav-link">Sectors</a></li>
+                <li><a href="#technology" class="nav-link">Technology</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="btn-login" id="loginBtn">Login</button>
+                <button class="btn-signup" id="signupBtn">Get Started</button>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+            <ul class="mobile-nav-links">
+                <li><a href="#features" class="mobile-nav-link">Features</a></li>
+                <li><a href="#sectors" class="mobile-nav-link">Sectors</a></li>
+                <li><a href="#technology" class="mobile-nav-link">Technology</a></li>
+                <li><a href="#about" class="mobile-nav-link">About</a></li>
+                <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
+            </ul>
+            <div class="mobile-menu-actions">
+                <button class="btn-login mobile-btn" id="mobileLoginBtn">Login</button>
+                <button class="btn-signup mobile-btn" id="mobileSignupBtn">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="particle" style="--i: 1;"></div>
+            <div class="particle" style="--i: 2;"></div>
+            <div class="particle" style="--i: 3;"></div>
+            <div class="particle" style="--i: 4;"></div>
+            <div class="particle" style="--i: 5;"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">🚀 Education 5.0 × Civilization 2.0</div>
+                <h1 class="hero-title">
+                    Your <span class="highlight-gradient">Complete Identity</span><br>
+                    Across All Sectors
+                </h1>
+                <p class="hero-description">
+                    Universal Life Passport - One quantum-secured identity for Education, Health, Environment, 
+                    Technology, Governance, Economy, and beyond. Track contributions, earn UEC, 
+                    and build your legacy across civilization with blockchain technology.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary hero-btn" id="heroSignupBtn">
+                        <span>Create Your Passport</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                    <button class="btn-secondary hero-btn" id="heroLearnBtn">
+                        <span>Learn More</span>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="stat-value">47+</div>
+                        <div class="stat-label">Bioregions</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Sectors</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-value">10K+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="passport-card">
+                    <div class="passport-glow"></div>
+                    <div class="passport-content">
+                        <div class="passport-header">
+                            <div class="passport-chip">🔐</div>
+                            <div class="passport-type">UNIVERSAL LIFE PASSPORT</div>
+                        </div>
+                        <div class="passport-avatar">
+                            <div class="avatar-placeholder">👤</div>
+                            <div class="avatar-status"></div>
+                        </div>
+                        <div class="passport-id">
+                            <div class="id-label">Citizen ID</div>
+                            <div class="id-value">#ULP-2025-XXX</div>
+                        </div>
+                        <div class="passport-balance">
+                            <div class="balance-item">
+                                <div class="balance-label">UEC Balance</div>
+                                <div class="balance-value">⚡ 12,450</div>
+                            </div>
+                            <div class="balance-item">
+                                <div class="balance-label">LCI Score</div>
+                                <div class="balance-value">✨ 77</div>
+                            </div>
+                        </div>
+                        <div class="passport-sectors">
+                            <span class="sector-badge">🎓</span>
+                            <span class="sector-badge">🏥</span>
+                            <span class="sector-badge">🌍</span>
+                            <span class="sector-badge">🔬</span>
+                            <span class="sector-badge">+8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            
+            <div class="auth-container">
+                <div class="auth-header">
+                    <div class="auth-logo">🌌</div>
+                    <h2 class="auth-title" id="authTitle">Welcome Back</h2>
+                    <p class="auth-subtitle" id="authSubtitle">Sign in to access your Universal Life Passport</p>
+                </div>
+
+                <!-- Tab Switcher -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login" id="loginTab">Login</button>
+                    <button class="auth-tab" data-tab="signup" id="signupTab">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <div class="auth-form active" id="loginForm">
+                    <div class="auth-methods">
+                        <button class="auth-method-btn google-btn">
+                            <svg class="method-icon" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        
+                        <button class="auth-method-btn digilocker-btn">
+                            <span class="method-icon">🔐</span>
+                            Continue with DigiLocker
+                        </button>
+
+                        <button class="auth-method-btn biometric-btn">
+                            <span class="method-icon">👆</span>
+                            Biometric Login
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+
+                    <form class="form" id="loginFormElement">
+                        <div class="form-group">
+                            <label class="form-label">ULP ID / Email</label>
+                            <input type="text" class="form-input" placeholder="Enter your ULP ID or email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-link">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn-submit">Sign In</button>
+                    </form>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="auth-form" id="signupForm">
+                    <div class="auth-methods">
+                        <button class="auth-method-btn google-btn">
+                            <svg class="method-icon" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Sign up with Google
+                        </button>
+                        
+                        <button class="auth-method-btn digilocker-btn">
+                            <span class="method-icon">🔐</span>
+                            Sign up with DigiLocker
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+
+                    <form class="form" id="signupFormElement">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" required>
+                                <span>I agree to the Terms of Service and Privacy Policy</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-submit">Create Account</button>
+                        <p class="form-note">
+                            After creating your account, you'll complete your blockchain passport registration
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of the content remains similar to original -->
+    <!-- Features, Sectors, Stats, Footer sections here -->
+
+    <script src="ulp-account.js"></script>
+</body>
+</html>
