@@ -1,48 +1,45 @@
 // ========================================
-// Universal Life Passport - JavaScript
+// Universal Life Passport - Enhanced JavaScript
 // ========================================
 
 // DOM Elements
-const navbar = document.querySelector('.navbar');
 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
 const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
 const mobileMenuClose = document.getElementById('mobileMenuClose');
 const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+// Auth elements
 const authModal = document.getElementById('authModal');
 const modalOverlay = document.getElementById('modalOverlay');
 const modalClose = document.getElementById('modalClose');
-
-// Auth buttons
-const loginBtn = document.getElementById('loginBtn');
-const signupBtn = document.getElementById('signupBtn');
-const heroSignupBtn = document.getElementById('heroSignupBtn');
-const heroLearnBtn = document.getElementById('heroLearnBtn');
 const mobileLoginBtn = document.getElementById('mobileLoginBtn');
 const mobileSignupBtn = document.getElementById('mobileSignupBtn');
+const heroSignupBtn = document.getElementById('heroSignupBtn');
+const applyNowBtn = document.getElementById('applyNowBtn');
 
-// Auth tabs and forms
-const loginTab = document.getElementById('loginTab');
-const signupTab = document.getElementById('signupTab');
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
+// Auth content
+const loginContent = document.getElementById('loginContent');
+const otpVerification = document.getElementById('otpVerification');
 const authTitle = document.getElementById('authTitle');
 const authSubtitle = document.getElementById('authSubtitle');
 
-// Form elements
-const loginFormElement = document.getElementById('loginFormElement');
-const signupFormElement = document.getElementById('signupFormElement');
+// Auth buttons
+const googleLoginBtn = document.getElementById('googleLoginBtn');
+const digilockerLoginBtn = document.getElementById('digilockerLoginBtn');
 
-// ========================================
-// Navbar Scroll Effect
-// ========================================
+// OTP elements
+const otpForm = document.getElementById('otpForm');
+const otpInputs = document.querySelectorAll('.otp-input');
+const otpTimer = document.getElementById('otpTimer');
+const resendOtp = document.getElementById('resendOtp');
+const otpDestination = document.getElementById('otpDestination');
 
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
+// Loading overlay
+const loadingOverlay = document.getElementById('loadingOverlay');
+
+// State
+let currentAuthMethod = '';
+let otpTimerInterval = null;
 
 // ========================================
 // Mobile Menu Functions
@@ -60,7 +57,6 @@ function closeMobileMenu() {
     document.body.style.overflow = '';
 }
 
-// Mobile menu toggle
 mobileMenuToggle?.addEventListener('click', () => {
     if (mobileMenuOverlay.classList.contains('active')) {
         closeMobileMenu();
@@ -69,17 +65,14 @@ mobileMenuToggle?.addEventListener('click', () => {
     }
 });
 
-// Mobile menu close button
 mobileMenuClose?.addEventListener('click', closeMobileMenu);
 
-// Close mobile menu when clicking overlay
 mobileMenuOverlay?.addEventListener('click', (e) => {
     if (e.target === mobileMenuOverlay) {
         closeMobileMenu();
     }
 });
 
-// Close mobile menu when clicking nav links
 mobileNavLinks.forEach(link => {
     link.addEventListener('click', () => {
         closeMobileMenu();
@@ -90,61 +83,63 @@ mobileNavLinks.forEach(link => {
 // Authentication Modal Functions
 // ========================================
 
-function openAuthModal(mode = 'login') {
+function openAuthModal() {
     authModal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
-    if (mode === 'signup') {
-        switchToSignup();
-    } else {
-        switchToLogin();
-    }
+    showLoginContent();
 }
 
 function closeAuthModal() {
     authModal.classList.remove('active');
     document.body.style.overflow = '';
+    resetAuthModal();
 }
 
-function switchToLogin() {
-    loginTab.classList.add('active');
-    signupTab.classList.remove('active');
-    loginForm.classList.add('active');
-    signupForm.classList.remove('active');
-    authTitle.textContent = 'Welcome Back';
-    authSubtitle.textContent = 'Sign in to access your Universal Life Passport';
+function showLoginContent() {
+    loginContent.style.display = 'block';
+    otpVerification.style.display = 'none';
+    authTitle.textContent = 'Welcome';
+    authSubtitle.textContent = 'Choose your authentication method';
 }
 
-function switchToSignup() {
-    signupTab.classList.add('active');
-    loginTab.classList.remove('active');
-    signupForm.classList.add('active');
-    loginForm.classList.remove('active');
-    authTitle.textContent = 'Create Account';
-    authSubtitle.textContent = 'Join the future of universal identity';
+function showOTPVerification(method, destination) {
+    loginContent.style.display = 'none';
+    otpVerification.style.display = 'block';
+    authTitle.textContent = 'Verify OTP';
+    authSubtitle.textContent = `Enter the code sent to ${destination}`;
+    otpDestination.textContent = destination;
+    currentAuthMethod = method;
+    startOTPTimer();
+    otpInputs[0].focus();
+}
+
+function resetAuthModal() {
+    showLoginContent();
+    otpInputs.forEach(input => input.value = '');
+    if (otpTimerInterval) {
+        clearInterval(otpTimerInterval);
+        otpTimerInterval = null;
+    }
 }
 
 // Modal event listeners
-loginBtn?.addEventListener('click', () => openAuthModal('login'));
-signupBtn?.addEventListener('click', () => openAuthModal('signup'));
-heroSignupBtn?.addEventListener('click', () => openAuthModal('signup'));
 mobileLoginBtn?.addEventListener('click', () => {
     closeMobileMenu();
-    openAuthModal('login');
+    openAuthModal();
 });
+
 mobileSignupBtn?.addEventListener('click', () => {
     closeMobileMenu();
-    openAuthModal('signup');
+    openAuthModal();
 });
+
+heroSignupBtn?.addEventListener('click', openAuthModal);
+applyNowBtn?.addEventListener('click', openAuthModal);
 
 modalClose?.addEventListener('click', closeAuthModal);
 modalOverlay?.addEventListener('click', closeAuthModal);
 
-// Tab switching
-loginTab?.addEventListener('click', switchToLogin);
-signupTab?.addEventListener('click', switchToSignup);
-
-// Close modal with Escape key
+// Close with Escape key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (authModal.classList.contains('active')) {
@@ -157,130 +152,194 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ========================================
-// Form Submissions
+// Google Authentication
 // ========================================
 
-loginFormElement?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const submitBtn = e.target.querySelector('.btn-submit');
-    const originalText = submitBtn.textContent;
-    
+googleLoginBtn?.addEventListener('click', async () => {
     try {
-        // Show loading state
-        submitBtn.textContent = 'Signing in...';
-        submitBtn.disabled = true;
+        showLoading('Connecting to Google...');
         
-        // Simulate API call
+        // Simulate Google OAuth
         await simulateAPICall(2000);
         
-        // Success - redirect to blockchain passport form
-        showNotification('Login successful! Redirecting...', 'success');
+        hideLoading();
         
-        setTimeout(() => {
-            // Redirect to blockchain passport registration
-            window.location.href = '/passport-registration.html';
-        }, 1500);
+        // Simulate getting user email
+        const email = 'user@gmail.com';
+        showNotification('Google connected! Sending OTP...', 'success');
         
-    } catch (error) {
-        showNotification('Login failed. Please check your credentials.', 'error');
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }
-});
-
-signupFormElement?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const submitBtn = e.target.querySelector('.btn-submit');
-    const originalText = submitBtn.textContent;
-    
-    try {
-        // Show loading state
-        submitBtn.textContent = 'Creating account...';
-        submitBtn.disabled = true;
+        await simulateAPICall(1000);
         
-        // Simulate API call
-        await simulateAPICall(2000);
-        
-        // Success - redirect to blockchain passport form
-        showNotification('Account created! Complete your blockchain passport...', 'success');
-        
-        setTimeout(() => {
-            // Redirect to blockchain passport registration
-            window.location.href = '/passport-registration.html';
-        }, 1500);
+        // Show OTP verification
+        showOTPVerification('google', email);
         
     } catch (error) {
-        showNotification('Signup failed. Please try again.', 'error');
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+        hideLoading();
+        showNotification('Google authentication failed. Please try again.', 'error');
     }
 });
 
 // ========================================
-// Social Authentication
+// DigiLocker Authentication
 // ========================================
 
-const googleBtns = document.querySelectorAll('.google-btn');
-const digilockerBtns = document.querySelectorAll('.digilocker-btn');
-const biometricBtns = document.querySelectorAll('.biometric-btn');
-
-googleBtns.forEach(btn => {
-    btn.addEventListener('click', async () => {
-        try {
-            showNotification('Connecting to Google...', 'info');
-            await simulateAPICall(1500);
-            showNotification('Google authentication successful!', 'success');
-            
-            setTimeout(() => {
-                window.location.href = '/passport-registration.html';
-            }, 1500);
-        } catch (error) {
-            showNotification('Google authentication failed', 'error');
-        }
-    });
+digilockerLoginBtn?.addEventListener('click', async () => {
+    try {
+        showLoading('Connecting to DigiLocker...');
+        
+        // Simulate DigiLocker authentication
+        await simulateAPICall(2000);
+        
+        hideLoading();
+        
+        // Simulate getting user phone/email
+        const phone = '+91 XXXXX-XXXXX';
+        showNotification('DigiLocker connected! Sending OTP...', 'success');
+        
+        await simulateAPICall(1000);
+        
+        // Show OTP verification
+        showOTPVerification('digilocker', phone);
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('DigiLocker authentication failed. Please try again.', 'error');
+    }
 });
 
-digilockerBtns.forEach(btn => {
-    btn.addEventListener('click', async () => {
-        try {
-            showNotification('Connecting to DigiLocker...', 'info');
-            await simulateAPICall(1500);
-            showNotification('DigiLocker authentication successful!', 'success');
-            
-            setTimeout(() => {
-                window.location.href = '/passport-registration.html';
-            }, 1500);
-        } catch (error) {
-            showNotification('DigiLocker authentication failed', 'error');
+// ========================================
+// OTP Functions
+// ========================================
+
+function startOTPTimer() {
+    let timeLeft = 60;
+    otpTimer.textContent = timeLeft;
+    resendOtp.disabled = true;
+    
+    otpTimerInterval = setInterval(() => {
+        timeLeft--;
+        otpTimer.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(otpTimerInterval);
+            resendOtp.disabled = false;
         }
-    });
+    }, 1000);
+}
+
+resendOtp?.addEventListener('click', async () => {
+    try {
+        showLoading('Resending OTP...');
+        await simulateAPICall(1500);
+        hideLoading();
+        showNotification('OTP resent successfully!', 'success');
+        startOTPTimer();
+        otpInputs.forEach(input => input.value = '');
+        otpInputs[0].focus();
+    } catch (error) {
+        hideLoading();
+        showNotification('Failed to resend OTP', 'error');
+    }
 });
 
-biometricBtns.forEach(btn => {
-    btn.addEventListener('click', async () => {
-        try {
-            // Check if Web Authentication API is available
-            if (!window.PublicKeyCredential) {
-                showNotification('Biometric authentication not supported on this device', 'error');
-                return;
+// OTP Input handling
+otpInputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        
+        // Only allow numbers
+        if (!/^\d*$/.test(value)) {
+            e.target.value = '';
+            return;
+        }
+        
+        // Move to next input
+        if (value && index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+        }
+        
+        // Auto-submit when all filled
+        const allFilled = Array.from(otpInputs).every(input => input.value);
+        if (allFilled) {
+            setTimeout(() => otpForm.dispatchEvent(new Event('submit')), 300);
+        }
+    });
+    
+    input.addEventListener('keydown', (e) => {
+        // Move to previous input on backspace
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+            otpInputs[index - 1].focus();
+        }
+    });
+    
+    // Paste handling
+    input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').slice(0, 6);
+        const digits = pastedData.split('');
+        
+        digits.forEach((digit, i) => {
+            if (otpInputs[i] && /^\d$/.test(digit)) {
+                otpInputs[i].value = digit;
             }
-            
-            showNotification('Please authenticate with your biometric...', 'info');
-            await simulateAPICall(2000);
-            showNotification('Biometric authentication successful!', 'success');
-            
-            setTimeout(() => {
-                window.location.href = '/passport-registration.html';
-            }, 1500);
-        } catch (error) {
-            showNotification('Biometric authentication failed', 'error');
+        });
+        
+        if (digits.length === 6) {
+            setTimeout(() => otpForm.dispatchEvent(new Event('submit')), 300);
         }
     });
 });
+
+// OTP Form submission
+otpForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const otpValue = Array.from(otpInputs).map(input => input.value).join('');
+    
+    if (otpValue.length !== 6) {
+        showNotification('Please enter complete OTP', 'warning');
+        return;
+    }
+    
+    try {
+        showLoading('Verifying OTP...');
+        
+        // Simulate OTP verification
+        await simulateAPICall(2000);
+        
+        hideLoading();
+        closeAuthModal();
+        
+        showNotification('Authentication successful! Redirecting to registration form...', 'success');
+        
+        // Redirect to registration form after 1.5 seconds
+        setTimeout(() => {
+            window.location.href = 'registration.html';
+        }, 1500);
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Invalid OTP. Please try again.', 'error');
+        otpInputs.forEach(input => input.value = '');
+        otpInputs[0].focus();
+    }
+});
+
+// ========================================
+// Loading Overlay Functions
+// ========================================
+
+function showLoading(text = 'Processing...') {
+    loadingOverlay.classList.add('active');
+    const loadingText = loadingOverlay.querySelector('.loading-text');
+    if (loadingText) {
+        loadingText.textContent = text;
+    }
+}
+
+function hideLoading() {
+    loadingOverlay.classList.remove('active');
+}
 
 // ========================================
 // Smooth Scrolling
@@ -290,65 +349,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
         
-        // Don't prevent default for # only
         if (href === '#') return;
         
         e.preventDefault();
         
         const target = document.querySelector(href);
         if (target) {
-            const navHeight = navbar.offsetHeight;
-            const targetPosition = target.offsetTop - navHeight;
+            const navbar = document.querySelector('.navbar');
+            const navHeight = navbar ? navbar.offsetHeight : 0;
+            const targetPosition = target.offsetTop - navHeight - 20;
             
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
             });
         }
-    });
-});
-
-// Learn More button scroll to features
-heroLearnBtn?.addEventListener('click', () => {
-    const featuresSection = document.getElementById('features');
-    if (featuresSection) {
-        const navHeight = navbar.offsetHeight;
-        const targetPosition = featuresSection.offsetTop - navHeight;
-        
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
-    }
-});
-
-// ========================================
-// Intersection Observer for Animations
-// ========================================
-
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements with animation
-document.addEventListener('DOMContentLoaded', () => {
-    const animateElements = document.querySelectorAll('.feature-card, .sector-card');
-    
-    animateElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'all 0.6s ease';
-        observer.observe(element);
     });
 });
 
@@ -440,7 +455,7 @@ function getNotificationColor(type) {
     return colors[type] || colors.info;
 }
 
-// Add CSS animations
+// Add notification animations
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideInRight {
@@ -487,31 +502,37 @@ function simulateAPICall(duration = 1000) {
 }
 
 // ========================================
-// Page Load Initialization
+// Intersection Observer for Animations
 // ========================================
 
-window.addEventListener('load', () => {
-    console.log('Universal Life Passport - Homepage Loaded');
-    console.log('System: Ready for authentication');
-    console.log('Blockchain: Connected');
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe elements with animation
+document.addEventListener('DOMContentLoaded', () => {
+    const animateElements = document.querySelectorAll('.step-card');
     
-    // Add any initialization code here
+    animateElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        element.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(element);
+    });
 });
 
 // ========================================
-// Performance Monitoring
-// ========================================
-
-if ('performance' in window) {
-    window.addEventListener('load', () => {
-        const perfData = performance.timing;
-        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
-        console.log(`Page Load Time: ${pageLoadTime}ms`);
-    });
-}
-
-// ========================================
-// Touch and Gesture Support
+// Touch Gestures
 // ========================================
 
 let touchStartX = 0;
@@ -523,38 +544,51 @@ mobileMenuOverlay?.addEventListener('touchstart', (e) => {
 
 mobileMenuOverlay?.addEventListener('touchend', (e) => {
     touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-}, false);
-
-function handleSwipe() {
-    // Swipe right to close menu
     if (touchEndX > touchStartX + 50) {
         closeMobileMenu();
+    }
+}, false);
+
+// ========================================
+// Form Validation
+// ========================================
+
+function validateOTP(otp) {
+    return /^\d{6}$/.test(otp);
+}
+
+// ========================================
+// Local Storage for User Preference
+// ========================================
+
+function saveAuthMethod(method) {
+    try {
+        localStorage.setItem('ulp_last_auth_method', method);
+    } catch (error) {
+        console.error('Failed to save auth method:', error);
+    }
+}
+
+function getLastAuthMethod() {
+    try {
+        return localStorage.getItem('ulp_last_auth_method') || null;
+    } catch (error) {
+        console.error('Failed to get auth method:', error);
+        return null;
     }
 }
 
 // ========================================
-// Passive Event Listeners for Performance
+// Network Status Detection
 // ========================================
 
-const passiveSupported = (() => {
-    let passive = false;
-    try {
-        const options = {
-            get passive() {
-                passive = true;
-                return false;
-            }
-        };
-        window.addEventListener('test', null, options);
-        window.removeEventListener('test', null, options);
-    } catch (err) {
-        passive = false;
-    }
-    return passive;
-})();
+window.addEventListener('online', () => {
+    showNotification('Connection restored', 'success');
+});
 
-const passiveOption = passiveSupported ? { passive: true } : false;
+window.addEventListener('offline', () => {
+    showNotification('No internet connection', 'warning');
+});
 
 // ========================================
 // Device Detection
@@ -586,274 +620,13 @@ if (device.isMobile) {
 }
 
 // ========================================
-// Biometric Authentication (Web Authentication API)
-// ========================================
-
-async function registerBiometric() {
-    if (!window.PublicKeyCredential) {
-        showNotification('Biometric authentication not supported', 'error');
-        return false;
-    }
-    
-    try {
-        const publicKey = {
-            challenge: new Uint8Array(32),
-            rp: {
-                name: "Universal Life Passport",
-                id: window.location.hostname
-            },
-            user: {
-                id: new Uint8Array(16),
-                name: "user@example.com",
-                displayName: "User Name"
-            },
-            pubKeyCredParams: [
-                {
-                    type: "public-key",
-                    alg: -7 // ES256
-                }
-            ],
-            authenticatorSelection: {
-                authenticatorAttachment: "platform",
-                userVerification: "required"
-            },
-            timeout: 60000,
-            attestation: "direct"
-        };
-        
-        const credential = await navigator.credentials.create({
-            publicKey
-        });
-        
-        return credential;
-    } catch (error) {
-        console.error('Biometric registration error:', error);
-        return false;
-    }
-}
-
-async function authenticateBiometric() {
-    if (!window.PublicKeyCredential) {
-        showNotification('Biometric authentication not supported', 'error');
-        return false;
-    }
-    
-    try {
-        const publicKey = {
-            challenge: new Uint8Array(32),
-            timeout: 60000,
-            userVerification: "required",
-            rpId: window.location.hostname
-        };
-        
-        const assertion = await navigator.credentials.get({
-            publicKey
-        });
-        
-        return assertion;
-    } catch (error) {
-        console.error('Biometric authentication error:', error);
-        return false;
-    }
-}
-
-// ========================================
-// Form Validation
-// ========================================
-
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-function validatePassword(password) {
-    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
-    return re.test(password);
-}
-
-// Real-time form validation
-const emailInputs = document.querySelectorAll('input[type="email"]');
-const passwordInputs = document.querySelectorAll('input[type="password"]');
-
-emailInputs.forEach(input => {
-    input.addEventListener('blur', function() {
-        if (this.value && !validateEmail(this.value)) {
-            this.style.borderColor = '#ff7675';
-            showInputError(this, 'Please enter a valid email address');
-        } else {
-            this.style.borderColor = '#00b894';
-            removeInputError(this);
-        }
-    });
-});
-
-passwordInputs.forEach(input => {
-    input.addEventListener('input', function() {
-        if (this.value) {
-            const strength = getPasswordStrength(this.value);
-            showPasswordStrength(this, strength);
-        }
-    });
-});
-
-function getPasswordStrength(password) {
-    let strength = 0;
-    
-    if (password.length >= 8) strength += 25;
-    if (password.length >= 12) strength += 25;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
-    if (/\d/.test(password)) strength += 15;
-    if (/[@$!%*?&]/.test(password)) strength += 10;
-    
-    return Math.min(strength, 100);
-}
-
-function showPasswordStrength(input, strength) {
-    let indicator = input.parentElement.querySelector('.password-strength');
-    
-    if (!indicator) {
-        indicator = document.createElement('div');
-        indicator.className = 'password-strength';
-        indicator.style.cssText = `
-            height: 4px;
-            border-radius: 2px;
-            margin-top: 0.5rem;
-            transition: all 0.3s ease;
-        `;
-        input.parentElement.appendChild(indicator);
-    }
-    
-    let color = '';
-    if (strength < 30) color = '#ff7675';
-    else if (strength < 60) color = '#fdcb6e';
-    else color = '#00b894';
-    
-    indicator.style.width = `${strength}%`;
-    indicator.style.background = color;
-}
-
-function showInputError(input, message) {
-    let error = input.parentElement.querySelector('.input-error');
-    
-    if (!error) {
-        error = document.createElement('div');
-        error.className = 'input-error';
-        error.style.cssText = `
-            color: #ff7675;
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-        `;
-        input.parentElement.appendChild(error);
-    }
-    
-    error.textContent = message;
-}
-
-function removeInputError(input) {
-    const error = input.parentElement.querySelector('.input-error');
-    if (error) error.remove();
-}
-
-// ========================================
-// LocalStorage for Remember Me
-// ========================================
-
-function saveLoginState(email, remember) {
-    if (remember) {
-        localStorage.setItem('ulp_remembered_email', email);
-        localStorage.setItem('ulp_remember_me', 'true');
-    } else {
-        localStorage.removeItem('ulp_remembered_email');
-        localStorage.removeItem('ulp_remember_me');
-    }
-}
-
-function loadLoginState() {
-    const rememberMe = localStorage.getItem('ulp_remember_me') === 'true';
-    const email = localStorage.getItem('ulp_remembered_email');
-    
-    if (rememberMe && email) {
-        const emailInput = loginFormElement?.querySelector('input[type="text"]');
-        const rememberCheckbox = loginFormElement?.querySelector('input[type="checkbox"]');
-        
-        if (emailInput) emailInput.value = email;
-        if (rememberCheckbox) rememberCheckbox.checked = true;
-    }
-}
-
-// Load saved login state on page load
-document.addEventListener('DOMContentLoaded', loadLoginState);
-
-// ========================================
-// Keyboard Shortcuts
-// ========================================
-
-document.addEventListener('keydown', (e) => {
-    // Ctrl/Cmd + K to open login
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        openAuthModal('login');
-    }
-    
-    // Ctrl/Cmd + Shift + K to open signup
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'K') {
-        e.preventDefault();
-        openAuthModal('signup');
-    }
-});
-
-// ========================================
-// Network Status Detection
-// ========================================
-
-function updateOnlineStatus() {
-    if (!navigator.onLine) {
-        showNotification('No internet connection. Please check your network.', 'warning');
-    }
-}
-
-window.addEventListener('online', () => {
-    showNotification('Connection restored', 'success');
-});
-
-window.addEventListener('offline', () => {
-    showNotification('Lost internet connection', 'warning');
-});
-
-// ========================================
-// Prefetch Important Resources
-// ========================================
-
-function prefetchResources() {
-    const resources = [
-        '/passport-registration.html',
-        '/dashboard.html'
-    ];
-    
-    resources.forEach(url => {
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = url;
-        document.head.appendChild(link);
-    });
-}
-
-// Prefetch after page load
-window.addEventListener('load', () => {
-    setTimeout(prefetchResources, 2000);
-});
-
-// ========================================
-// Analytics & Tracking (Placeholder)
+// Analytics Tracking (Placeholder)
 // ========================================
 
 function trackEvent(category, action, label) {
-    console.log(`Track: ${category} - ${action} - ${label}`);
+    console.log(`📊 Track: ${category} - ${action} - ${label}`);
     
-    // Integrate with your analytics platform here
-    // Example: Google Analytics, Mixpanel, etc.
-    
+    // Integrate with your analytics platform
     if (typeof gtag !== 'undefined') {
         gtag('event', action, {
             'event_category': category,
@@ -863,48 +636,60 @@ function trackEvent(category, action, label) {
 }
 
 // Track important events
-loginBtn?.addEventListener('click', () => {
-    trackEvent('Authentication', 'Click', 'Login Button');
+googleLoginBtn?.addEventListener('click', () => {
+    trackEvent('Authentication', 'Click', 'Google Login');
+    saveAuthMethod('google');
 });
 
-signupBtn?.addEventListener('click', () => {
-    trackEvent('Authentication', 'Click', 'Signup Button');
+digilockerLoginBtn?.addEventListener('click', () => {
+    trackEvent('Authentication', 'Click', 'DigiLocker Login');
+    saveAuthMethod('digilocker');
+});
+
+heroSignupBtn?.addEventListener('click', () => {
+    trackEvent('CTA', 'Click', 'Hero Signup Button');
+});
+
+applyNowBtn?.addEventListener('click', () => {
+    trackEvent('CTA', 'Click', 'Apply Now Button');
 });
 
 // ========================================
-// Dark Mode Support (Future Enhancement)
+// Keyboard Shortcuts
 // ========================================
 
-function initDarkMode() {
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    function updateDarkMode(e) {
-        if (e.matches) {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + K to open auth modal
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openAuthModal();
     }
-    
-    darkModeMediaQuery.addListener(updateDarkMode);
-    updateDarkMode(darkModeMediaQuery);
+});
+
+// ========================================
+// Performance Monitoring
+// ========================================
+
+if ('performance' in window) {
+    window.addEventListener('load', () => {
+        const perfData = performance.timing;
+        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+        console.log(`⚡ Page Load Time: ${pageLoadTime}ms`);
+    });
 }
 
-// Uncomment to enable dark mode
-// initDarkMode();
-
 // ========================================
-// Service Worker Registration (PWA Support)
+// Service Worker Registration (PWA)
 // ========================================
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
-                console.log('Service Worker registered:', registration);
+                console.log('✓ Service Worker registered');
             })
             .catch(error => {
-                console.log('Service Worker registration failed:', error);
+                console.log('✕ Service Worker registration failed:', error);
             });
     });
 }
@@ -913,26 +698,82 @@ if ('serviceWorker' in navigator) {
 // Console Welcome Message
 // ========================================
 
-console.log('%c🌌 Universal Life Passport', 'font-size: 24px; font-weight: bold; color: #00ffff;');
+console.log('%c🌌 Universal Life Passport', 'font-size: 24px; font-weight: bold; color: #FFD700;');
 console.log('%cEducation 5.0 × Civilization 2.0', 'font-size: 14px; color: #667eea;');
 console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #666;');
 console.log('%cSystem Status: ✓ Online', 'color: #00b894;');
 console.log('%cBlockchain: ✓ Connected', 'color: #00b894;');
 console.log('%cQuantum Security: ✓ Active', 'color: #00b894;');
 console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #666;');
-console.log('%cFor developers: API docs at https://docs.ulp.org', 'color: #999;');
+console.log('%cReady for authentication', 'color: #FFD700; font-weight: bold;');
 
 // ========================================
-// Export for testing (if needed)
+// Page Initialization
+// ========================================
+
+window.addEventListener('load', () => {
+    console.log('✓ Universal Life Passport loaded successfully');
+    
+    // Check for last auth method
+    const lastMethod = getLastAuthMethod();
+    if (lastMethod) {
+        console.log(`Last authentication method: ${lastMethod}`);
+    }
+    
+    // Check network status
+    if (!navigator.onLine) {
+        showNotification('You are offline. Some features may not work.', 'warning');
+    }
+});
+
+// ========================================
+// Error Handling
+// ========================================
+
+window.addEventListener('error', (e) => {
+    console.error('Global error:', e.error);
+    // You can send this to your error tracking service
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled promise rejection:', e.reason);
+    // You can send this to your error tracking service
+});
+
+// ========================================
+// Prevent Multiple Form Submissions
+// ========================================
+
+let isSubmitting = false;
+
+function preventDoubleSubmit(callback) {
+    return async function(...args) {
+        if (isSubmitting) {
+            showNotification('Please wait, processing...', 'info');
+            return;
+        }
+        
+        isSubmitting = true;
+        try {
+            await callback.apply(this, args);
+        } finally {
+            isSubmitting = false;
+        }
+    };
+}
+
+// ========================================
+// Export for Testing
 // ========================================
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         openAuthModal,
         closeAuthModal,
-        validateEmail,
-        validatePassword,
-        getPasswordStrength
+        showOTPVerification,
+        validateOTP,
+        showNotification,
+        showLoading,
+        hideLoading
     };
 }
-
