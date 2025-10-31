@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULP Dashboard - Universal Life Passport</title>
+    <link rel="stylesheet" href="ulp-dashboard-styles.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">ULP Dashboard</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span class="toggle-icon">☰</span>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#overview" class="nav-item active" data-section="overview">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Overview</span>
+            </a>
+            <a href="#passport" class="nav-item" data-section="passport">
+                <span class="nav-icon">🎫</span>
+                <span class="nav-text">My Passport</span>
+            </a>
+            <a href="#profile" class="nav-item" data-section="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Full Profile</span>
+            </a>
+            <a href="#contributions" class="nav-item" data-section="contributions">
+                <span class="nav-icon">📈</span>
+                <span class="nav-text">Contributions</span>
+            </a>
+            <a href="#sectors" class="nav-item" data-section="sectors">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-text">Sectors</span>
+            </a>
+            <a href="#portfolio" class="nav-item" data-section="portfolio">
+                <span class="nav-icon">💼</span>
+                <span class="nav-text">Portfolio</span>
+            </a>
+            <a href="#analytics" class="nav-item" data-section="analytics">
+                <span class="nav-icon">📉</span>
+                <span class="nav-text">Analytics</span>
+            </a>
+            <a href="#downloads" class="nav-item" data-section="downloads">
+                <span class="nav-icon">📥</span>
+                <span class="nav-text">Downloads</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">
+                <span class="logout-icon">🚪</span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                <h1 class="page-title" id="pageTitle">Dashboard Overview</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">Live</span>
+                </div>
+                <div class="last-update">
+                    Last updated: <span id="lastUpdate">Just now</span>
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">👤</div>
+                    <span class="user-name" id="userName">User</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Sections -->
+        <div class="dashboard-content">
+            
+            <!-- Overview Section -->
+            <section class="dashboard-section active" id="overview-section">
+                <div class="welcome-banner">
+                    <div class="welcome-content">
+                        <h2 class="welcome-title">Welcome back, <span id="userNameWelcome">User</span>! 👋</h2>
+                        <p class="welcome-subtitle">Here's your Universal Life Passport summary</p>
+                    </div>
+                    <div class="welcome-date">
+                        <div class="date-display" id="currentDate"></div>
+                        <div class="time-display" id="currentTime"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">✨</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Life Contribution Index</div>
+                            <div class="stat-value" id="lciScore">77</div>
+                            <div class="stat-change positive">+5 this month</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🌐</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Active Sectors</div>
+                            <div class="stat-value" id="activeSectors">6</div>
+                            <div class="stat-change">12 available</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Contributions</div>
+                            <div class="stat-value" id="totalContributions">142</div>
+                            <div class="stat-change positive">+12 this week</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Global Rank</div>
+                            <div class="stat-value">#<span id="globalRank">1,247</span></div>
+                            <div class="stat-change positive">↑ 43 positions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                        <a href="#" class="card-link">View All →</a>
+                    </div>
+                    <div class="activity-timeline" id="activityTimeline">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3 class="section-heading">Quick Actions</h3>
+                    <div class="actions-grid">
+                        <button class="action-btn" onclick="document.querySelector('[data-section=passport]').click()">
+                            <span class="action-icon">🎫</span>
+                            <span class="action-text">View Passport</span>
+                        </button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=contributions]').click()">
+                            <span class="action-icon">➕</span>
+                            <span class="action-text">Log Contribution</span>
+                        </button>
+                        <button class="action-btn" onclick="downloadPassportPDF()">
+                            <span class="action-icon">📥</span>
+                            <span class="action-text">Download Card</span>
+                        </button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=analytics]').click()">
+                            <span class="action-icon">📊</span>
+                            <span class="action-text">View Analytics</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Passport Section -->
+            <section class="dashboard-section" id="passport-section">
+                <div class="section-header">
+                    <h2 class="section-title">My Universal Life Passport</h2>
+                    <div class="section-actions">
+                        <button class="btn-secondary" onclick="downloadPassportPDF()">
+                            <span>📥</span> Download PDF
+                        </button>
+                        <button class="btn-secondary" onclick="printPassport()">
+                            <span>🖨️</span> Print
+                        </button>
+                        <button class="btn-primary" onclick="sharePassport()">
+                            <span>🔗</span> Share
+                        </button>
+                    </div>
+                </div>
+
+                <div class="passport-container">
+                    <!-- Online Passport Card -->
+                    <div class="passport-card-large" id="passportCard">
+                        <div class="passport-glow"></div>
+                        <div class="passport-content">
+                            <!-- Header -->
+                            <div class="passport-header">
+                                <div class="passport-emblem">🌍</div>
+                                <div class="passport-title-section">
+                                    <div class="passport-type">UNIVERSAL LIFE</div>
+                                    <div class="passport-main-title">PASSPORT</div>
+                                    <div class="passport-subtitle">Education 5.0 × Civilization 2.0</div>
+                                </div>
+                                <div class="passport-chip">💎</div>
+                            </div>
+
+                            <!-- Photo and QR Section -->
+                            <div class="passport-body">
+                                <div class="passport-left">
+                                    <div class="passport-photo">
+                                        <div class="photo-placeholder" id="userPhoto">👤</div>
+                                        <div class="photo-hologram"></div>
+                                    </div>
+                                    <div class="verification-badge">
+                                        <span class="verified-icon">✓</span>
+                                        <span class="verified-text">Blockchain Verified</span>
+                                    </div>
+                                </div>
+
+                                <div class="passport-right">
+                                    <div class="passport-info-grid">
+                                        <div class="info-item">
+                                            <div class="info-label">Full Name</div>
+                                            <div class="info-value" id="passportName">CITIZEN NAME</div>
+                                        </div>
+                                        
+                                        <div class="info-item">
+                                            <div class="info-label">ULP Citizenship ID</div>
+                                            <div class="info-value id-number" id="passportULPID">#ULP-2025-XXX-XXXX</div>
+                                        </div>
+                                        
+                                        <div class="info-item">
+                                            <div class="info-label">Date of Birth</div>
+                                            <div class="info-value" id="passportDOB">01/01/1990</div>
+                                        </div>
+                                        
+                                        <div class="info-item">
+                                            <div class="info-label">Nationality</div>
+                                            <div class="info-value" id="passportNationality">Earth Citizen</div>
+                                        </div>
+                                        
+                                        <div class="info-item full-width">
+                                            <div class="info-label">Life Contribution Index</div>
+                                            <div class="lci-display">
+                                                <span class="lci-score" id="passportLCI">77</span>
+                                                <span class="lci-max">/ 100</span>
+                                                <div class="lci-bar">
+                                                    <div class="lci-fill" id="passportLCIBar" style="width: 77%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="qr-section">
+                                        <div class="qr-code">
+                                            <div class="qr-pattern"></div>
+                                        </div>
+                                        <div class="qr-info">
+                                            <div class="qr-label">Scan to Verify</div>
+                                            <div class="blockchain-hash" id="blockchainHash">0x7f8a...9e2d</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Address Section -->
+                            <div class="passport-address-section">
+                                <div class="address-label">Registered Address</div>
+                                <div class="address-content" id="passportAddress">
+                                    Street Address, City, State, Postal Code<br>
+                                    Country, Bioregion
+                                </div>
+                            </div>
+
+                            <!-- Active Sectors -->
+                            <div class="passport-sectors-section">
+                                <div class="sectors-label">Active Contribution Sectors</div>
+                                <div class="sectors-badges" id="passportSectors">
+                                    <span class="sector-badge" title="Education">🎓</span>
+                                    <span class="sector-badge" title="Health">🏥</span>
+                                    <span class="sector-badge" title="Environment">🌍</span>
+                                    <span class="sector-badge" title="Technology">🔬</span>
+                                    <span class="sector-badge" title="Governance">🏛️</span>
+                                    <span class="sector-badge" title="Economy">💰</span>
+                                </div>
+                            </div>
+
+                            <!-- Security Footer -->
+                            <div class="passport-footer">
+                                <div class="security-features">
+                                    <span class="security-chip">🔐 Quantum Secured</span>
+                                    <span class="security-chip">⛓️ Blockchain Verified</span>
+                                    <span class="security-chip">🛡️ DNA Authenticated</span>
+                                </div>
+                                <div class="issue-date">
+                                    <span class="issue-label">Issued:</span>
+                                    <span class="issue-value" id="issueDate">28 Oct 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passport Stats -->
+                    <div class="passport-stats-grid">
+                        <div class="passport-stat">
+                            <div class="pstat-icon">📅</div>
+                            <div class="pstat-content">
+                                <div class="pstat-label">Member Since</div>
+                                <div class="pstat-value" id="memberSince">Oct 2025</div>
+                            </div>
+                        </div>
+                        <div class="passport-stat">
+                            <div class="pstat-icon">🌍</div>
+                            <div class="pstat-content">
+                                <div class="pstat-label">Bioregion</div>
+                                <div class="pstat-value" id="bioregionStat">South Asia</div>
+                            </div>
+                        </div>
+                        <div class="passport-stat">
+                            <div class="pstat-icon">⛓️</div>
+                            <div class="pstat-content">
+                                <div class="pstat-label">Blockchain Status</div>
+                                <div class="pstat-value verified">Verified</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section (Full CV/Resume) -->
+            <section class="dashboard-section" id="profile-section">
+                <div class="section-header">
+                    <h2 class="section-title">Complete Profile & CV</h2>
+                    <div class="section-actions">
+                        <button class="btn-secondary" onclick="downloadCV()">
+                            <span>📥</span> Download CV
+                        </button>
+                        <button class="btn-primary" onclick="editProfile()">
+                            <span>✏️</span> Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- Personal Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Personal Information</h3>
+                        </div>
+                        <div class="profile-content" id="personalInfo">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Professional Profile -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Professional Profile</h3>
+                        </div>
+                        <div class="profile-content" id="professionalInfo">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Skills & Expertise -->
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3 class="card-title">Skills & Expertise</h3>
+                        </div>
+                        <div class="skills-container" id="skillsContainer">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Contribution Goals -->
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3 class="card-title">Contribution Goals & Vision</h3>
+                        </div>
+                        <div class="goals-content" id="goalsContent">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contributions Section -->
+            <section class="dashboard-section" id="contributions-section">
+                <div class="section-header">
+                    <h2 class="section-title">My Contributions</h2>
+                    <button class="btn-primary" onclick="logContribution()">
+                        <span>➕</span> Log New Contribution
+                    </button>
+                </div>
+
+                <div class="contributions-summary">
+                    <div class="contrib-stat-card">
+                        <div class="contrib-number">142</div>
+                        <div class="contrib-label">Total Contributions</div>
+                    </div>
+                    <div class="contrib-stat-card">
+                        <div class="contrib-number">6</div>
+                        <div class="contrib-label">Active Sectors</div>
+                    </div>
+                    <div class="contrib-stat-card">
+                        <div class="contrib-number">2,450</div>
+                        <div class="contrib-label">Hours Contributed</div>
+                    </div>
+                    <div class="contrib-stat-card">
+                        <div class="contrib-number">95%</div>
+                        <div class="contrib-label">Completion Rate</div>
+                    </div>
+                </div>
+
+                <div class="contributions-list" id="contributionsList">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Sectors Section -->
+            <section class="dashboard-section" id="sectors-section">
+                <div class="section-header">
+                    <h2 class="section-title">Sector Contributions & LCI Breakdown</h2>
+                </div>
+
+                <div class="sectors-grid-detailed" id="sectorsDetailed">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section class="dashboard-section" id="portfolio-section">
+                <div class="section-header">
+                    <h2 class="section-title">Contribution Portfolio & Tracking</h2>
+                    <button class="btn-primary" onclick="addPortfolioItem()">
+                        <span>➕</span> Add Project
+                    </button>
+                </div>
+
+                <div class="portfolio-timeline" id="portfolioTimeline">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="dashboard-section" id="analytics-section">
+                <div class="section-header">
+                    <h2 class="section-title">Analytics & Reports</h2>
+                    <div class="section-actions">
+                        <select class="time-filter" id="timeFilter">
+                            <option value="week">This Week</option>
+                            <option value="month" selected>This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <!-- Charts will be populated by JavaScript -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">LCI Progress Over Time</h3>
+                        </div>
+                        <div class="chart-container" id="lciChart">
+                            <canvas id="lciCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Sector Distribution</h3>
+                        </div>
+                        <div class="chart-container" id="sectorChart">
+                            <canvas id="sectorCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3 class="card-title">Contribution Activity Heatmap</h3>
+                        </div>
+                        <div class="heatmap-container" id="activityHeatmap">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Downloads Section -->
+            <section class="dashboard-section" id="downloads-section">
+                <div class="section-header">
+                    <h2 class="section-title">Downloads & Documents</h2>
+                </div>
+
+                <div class="downloads-grid">
+                    <div class="download-card" onclick="downloadPassportPDF()">
+                        <div class="download-icon">🎫</div>
+                        <div class="download-info">
+                            <div class="download-title">ULP Passport Card</div>
+                            <div class="download-desc">PDF format for printing</div>
+                        </div>
+                        <button class="download-btn">Download</button>
+                    </div>
+
+                    <div class="download-card" onclick="downloadCV()">
+                        <div class="download-icon">📄</div>
+                        <div class="download-info">
+                            <div class="download-title">Complete CV/Resume</div>
+                            <div class="download-desc">Full professional profile</div>
+                        </div>
+                        <button class="download-btn">Download</button>
+                    </div>
+
+                    <div class="download-card" onclick="downloadCertificates()">
+                        <div class="download-icon">🏆</div>
+                        <div class="download-info">
+                            <div class="download-title">Certificates</div>
+                            <div class="download-desc">All earned certifications</div>
+                        </div>
+                        <button class="download-btn">Download</button>
+                    </div>
+
+                    <div class="download-card" onclick="downloadReports()">
+                        <div class="download-icon">📊</div>
+                        <div class="download-info">
+                            <div class="download-title">Analytics Reports</div>
+                            <div class="download-desc">Detailed contribution reports</div>
+                        </div>
+                        <button class="download-btn">Download</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="dashboard-script.js"></script>
+</body>
+</html>
