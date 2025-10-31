@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: ulp-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - ulp-network
+
+  # Backend Node.js API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: ulp-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DATABASE_URL=mongodb://mongo:27017/ulp_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - ulp-network
+
+  # MongoDB Database
+  mongo:
+    image: mongo:7.0
+    container_name: ulp-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=ulp_db
+    networks:
+      - ulp-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ulp-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - ulp-network
+
+  # PostgreSQL (Alternative to MongoDB)
+  postgres:
+    image: postgres:16-alpine
+    container_name: ulp-postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      - POSTGRES_DB=ulp_db
+      - POSTGRES_USER=ulp_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - ulp-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: ulp-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - ulp-network
+
+  # Blockchain Node (Optional - Ganache for testing)
+  ganache:
+    image: trufflesuite/ganache:latest
+    container_name: ulp-ganache
+    ports:
+      - "8545:8545"
+    command: >
+      ganache
+      --accounts 10
+      --defaultBalanceEther 100
+      --deterministic
+      --mnemonic "ulp blockchain network test"
+    networks:
+      - ulp-network
+
+volumes:
+  mongo-data:
+  redis-data:
+  postgres-data:
+
+networks:
+  ulp-network:
+    driver: bridge
